@@ -1,0 +1,101 @@
+#+BLOG: Mastodonc
+#+POSTID: 27799
+#+DATE: [2017-07-12 Wed 12:22]
+#+TITLE: Orgmode + Babel Clojure + Org2Blog
+
+All the notebook stuff demo recently has been making me jealous!
+
+This post is rough and ready but the tech all works swimmingly well.
+
+We write some org documentation that can:
+
+- execute Clojure code
+- embed the results
+- and post to Wordpress
+
+Details can be found [[http://orgmode.org/worg/org-contrib/babel/languages/ob-doc-clojure.html][here]].
+
+We can mix any language doesn't have to be Clojure, here we use Bash to create the project.  Simply run =C-c C-c= within the code block to setup.
+
+#+BEGIN_SRC bash :results code :exports results
+lein new babel-clojure-demo
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_SRC bash
+Generating a project called babel-clojure-demo based on the 'default' template.
+The default template is intended for library projects, not applications.
+To see other templates (app, plugin, etc), try `lein help new`.
+#+END_SRC
+
+Write this file out to =babel-clojure-demo/README.org=.
+
+Load the Org Babel package
+#+BEGIN_SRC elisp
+(require 'ob-clojure)
+#+END_SRC
+
+#+RESULTS:
+: ob-clojure
+
+Jack into cider, again just =C-c C-c= the below.
+
+#+BEGIN_SRC elisp
+(cider-jack-in)
+#+END_SRC
+
+#+RESULTS:
+: #<process nrepl-server>
+
+Let's try some stuff
+
+#+begin_src clojure :results value
+(+ 1 2)
+#+end_src
+
+#+RESULTS:
+: 3
+
+Hotload =incanter= with =(cljr-add-project-dependency)= to Repl (it will also add to =project.clj=.
+
+Let's create a graph.
+
+#+begin_src clojure :results silent
+  (use '(incanter core charts pdf))
+  ;;; Create the x and y data:
+  (def x-data [0.0 1.0 2.0 3.0 4.0 5.0])
+  (def y-data [2.3 9.0 2.6 3.1 8.1 4.5])
+  (def xy-line (xy-plot x-data y-data))
+  (view xy-line)
+  (save-pdf xy-line "incanter-xy-line.pdf")
+  (save xy-line "incanter-xy-line.png")
+#+end_src
+
+Now include it:
+
+#+CAPTION: A basic x-y line plot
+#+NAME: fig:xy-line
+[[./incanter-xy-line.png]]
+
+We want to view in line in Emacs, so execute:
+
+#+BEGIN_SRC elisp :results silent
+(org-toggle-inline-images)
+#+END_SRC
+
+Setup org2blog, some useful config beyond the norm.
+
+#+BEGIN_SRC elisp
+(setq org2blog/wp-shortcode-langs-map '(("elisp" . "text")))
+(setq org-export-babel-evaluate nil)
+#+END_SRC
+
+Publish with
+
+#+BEGIN_SRC
+(org2blog/wp-post-buffer-and-publish)
+#+END_SRC
+
+A notebook, running Clojure, in a readable test format that can be exported to Wordpress.  Pretty cool :-)
+
+# ./incanter-xy-line.png http://witanblog.files.wordpress.com/2017/07/incanter-xy-line.png
