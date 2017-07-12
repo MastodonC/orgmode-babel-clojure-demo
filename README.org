@@ -96,6 +96,6 @@ Publish with
 (org2blog/wp-post-buffer-and-publish)
 #+END_SRC
 
-A notebook, running Clojure, in a readable test format that can be exported to Wordpress.  Pretty cool :-)
+A notebook, running Clojure, in a readable text format that can be exported to Wordpress.  Pretty cool :-)
 
 # ./incanter-xy-line.png http://witanblog.files.wordpress.com/2017/07/incanter-xy-line.png
