@@ -49,7 +49,7 @@ Jack into cider, again just =C-c C-c= the below.
 
 Let's try some stuff
 
-#+begin_src clojure :results value
+#+begin_src clojure :results value :exports results
 (+ 1 2)
 #+end_src
 
